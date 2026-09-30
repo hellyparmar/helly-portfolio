@@ -22,19 +22,24 @@ export function Contact() {
     e.preventDefault();
     setStatus('loading');
     const formData = new FormData(e.currentTarget);
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const subject = formData.get('subject') as string;
-    const message = formData.get('message') as string;
+
+    const payload = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      subject: formData.get('subject') as string,
+      message: formData.get('message') as string,
+    };
 
     try {
       const res = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message }),
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error('Failed to send');
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Failed to send');
 
       setStatus('success');
       (e.target as HTMLFormElement).reset();
