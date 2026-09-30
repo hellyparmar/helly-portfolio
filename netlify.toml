@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+
+
+# Proxy the clean /api/send route to the actual Netlify function endpoint
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Fix for React/Vite Single Page Application (SPA) routing (prevents 404s on page refresh)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
